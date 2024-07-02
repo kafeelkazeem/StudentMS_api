@@ -1,5 +1,8 @@
-const express = require('express')
-const PORT = 8080
+require('dotenv').config();
+const express = require('express');
+const { default: mongoose } = require('mongoose');
+const PORT = process.env.PORT
+const DATABASE_URI = process.env.DATABASE_URI
 
 const app = express()
 
@@ -20,4 +23,10 @@ app.use('/', (req, res, next) =>{
     res.send('hi from node js')
 })
 
-app.listen(PORT, ()=> console.log('running on port 8080'))
+mongoose.connect(DATABASE_URI)
+.then(res =>{
+    app.listen(PORT, ()=> console.log('running on port 8080'))
+    console.log('connected to mongoose')
+    }
+)
+.catch(err => console.log(err))
