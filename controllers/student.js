@@ -47,11 +47,26 @@ exports.getDashBoard = (req, res, next) =>{
             totalStudentPaid: totalStudentPaid, 
             totalStudentNotPaid: totalStudentNotPaid, 
             totalStudentOwing: totalStudentOwing,
-            primaryBarChartData: [primary1, primary2, primary3, primary4, primary5],
-            pieChart: [totalStudentPaid, totalStudentOwing, totalStudentNotPaid] 
+            primaryBarChartData: [primary1, primary2, primary3, primary4, primary5], 
         })
     })
     .catch(err =>{
         console.log(err)
     })
 }
+
+exports.getAllStudentsPerClass = (req, res, next) => {
+    const cls = req.query.cls;
+    Student.find({ class: cls }).select('firstName lastName gender status paid owing')
+        .then(result => {
+            const transformedResult = result.map(doc => {
+                const { _id, ...rest } = doc.toObject();
+                return { id: _id, ...rest };
+            });
+            res.json(transformedResult);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'An error occurred' });
+        });
+};

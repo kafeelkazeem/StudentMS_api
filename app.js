@@ -25,8 +25,8 @@ app.use('/api', routes)
 
 mongoose.connect(DATABASE_URI)
 .then(res =>{
-    app.listen(PORT, ()=> console.log('running on port 8080'))
-    console.log('connected to mongoose')
+    app.listen(PORT, ()=> console.log('running on port', PORT))
+    console.log('connected to mongoDB atlas')
     }
 )
 .catch(err => console.log(err))
