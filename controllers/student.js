@@ -47,7 +47,8 @@ exports.getDashBoard = (req, res, next) =>{
             totalStudentPaid: totalStudentPaid, 
             totalStudentNotPaid: totalStudentNotPaid, 
             totalStudentOwing: totalStudentOwing,
-            totalPrimaryStudent: [primary1, primary2, primary3, primary4, primary5]
+            primaryBarChartData: [primary1, primary2, primary3, primary4, primary5],
+            pieChart: [totalStudentPaid, totalStudentOwing, totalStudentNotPaid] 
         })
     })
     .catch(err =>{
