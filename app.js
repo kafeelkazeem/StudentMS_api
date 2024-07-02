@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const { default: mongoose } = require('mongoose');
+const routes = require('./routes/appRoutes')
+
 const PORT = process.env.PORT
 const DATABASE_URI = process.env.DATABASE_URI
 
@@ -19,9 +21,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/', (req, res, next) =>{
-    res.send('hi from node js')
-})
+app.use('/api', routes)
 
 mongoose.connect(DATABASE_URI)
 .then(res =>{
