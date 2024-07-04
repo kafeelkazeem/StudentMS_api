@@ -1,72 +1,45 @@
-const Student = require('../models/student')
+import Student from '../models/student.js'
 
-exports.getDashBoard = (req, res, next) =>{
-    let totalStudent;
-    let totalStudentPaid;
-    let totalStudentNotPaid;
-    let totalStudentOwing;
-    let primary1, primary2, primary3, primary4, primary5
+export const getDashBoard = async (req, res, next) =>{
+    try {
+        const totalStudent = await Student.countDocuments()
+        const totalStudentPaid = await Student.countDocuments({status: 'paid'})
+        const totalStudentOwing = await Student.countDocuments({status: 'owing'})
+        const totalStudentNotPaid = await Student.countDocuments({status: 'not paid'})
 
-    Student.find()
-    .then(result =>{
-        totalStudent = result.length
-        return  Student.find({status: 'paid'})
-    })
-    .then(result =>{
-        totalStudentPaid = result.length
-        return Student.find({status: 'not paid'})
-    })
-    .then(result =>{
-        totalStudentNotPaid = result.length
-        return Student.find({status: 'owing'})
-    })
-    .then(result =>{
-        totalStudentOwing = result.length
-        return Student.find({class: 'primary 1'})
-    })
-    .then(result =>{
-        primary1 = result.length
-        return Student.find({class: 'primary 2'})
-    })
-    .then(result =>{
-        primary2 = result.length
-        return Student.find({class: 'primary 3'})
-    })
-    .then(result =>{
-        primary3 = result.length
-        return Student.find({class: 'primary 4'})
-    })
-    .then(result =>{
-        primary4 = result.length
-        return Student.find({class: 'primary 5'})
-    })
-    .then(result =>{
-        primary5 = result.length
-        res.json({
+        const classes = ['primary 1', 'primary 2', 'primary 3', 'primary 4', 'primary 5']
+
+        const classesNo = await Promise.all(
+            classes.map(async cls => {
+              const count = await Student.countDocuments({ class: cls });
+              return count;
+            })
+        );
+        res.status(200).json({
             totalStudent: totalStudent, 
             totalStudentPaid: totalStudentPaid, 
             totalStudentNotPaid: totalStudentNotPaid, 
             totalStudentOwing: totalStudentOwing,
-            primaryBarChartData: [primary1, primary2, primary3, primary4, primary5], 
+            primaryBarChartData: classesNo, 
         })
-    })
-    .catch(err =>{
-        console.log(err)
-    })
-}
 
-exports.getAllStudentsPerClass = (req, res, next) => {
-    const cls = req.query.cls;
-    Student.find({ class: cls }).select('firstName lastName gender status paid owing')
-        .then(result => {
-            const transformedResult = result.map(doc => {
-                const { _id, ...rest } = doc.toObject();
-                return { id: _id, ...rest };
-            });
-            res.json(transformedResult);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ error: 'An error occurred' });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'An error occurred' });
+    }
+} 
+
+export const getAllStudentsPerClass = async (req, res, next) =>{
+    try {
+        const cls = req.query.cls
+        const student = await Student.find({ class: cls }).select('firstName lastName gender status paid owing')
+        const transformedResult = student.map(doc => {
+            const { _id, ...rest } = doc.toObject();
+            return { id: _id, ...rest };
         });
-};
+        res.status(200).json(transformedResult);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'An error occurred' });
+    }
+} 

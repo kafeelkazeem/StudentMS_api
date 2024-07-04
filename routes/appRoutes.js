@@ -1,8 +1,9 @@
-const express =  require('express')
+import express from 'express'
+import {getDashBoard, getAllStudentsPerClass} from '../controllers/student.js'
+
 const router = express.Router()
-const studentController = require('../controllers/student')
 
-router.get('/getDashBoard', studentController.getDashBoard)
-router.get('/getAllStudentPerClass', studentController.getAllStudentsPerClass)
+router.get('/getDashBoard', getDashBoard)
+router.get('/getAllStudentPerClass', getAllStudentsPerClass)
 
-module.exports = router
+export default router

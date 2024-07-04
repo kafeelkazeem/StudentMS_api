@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose"
 
 const Schema = mongoose.Schema
 
@@ -50,6 +50,6 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     }
-})
+}, {timestamps: true})
 
-module.exports = mongoose.model('Student', StudentSchema)
+export default mongoose.model('Student', StudentSchema)
