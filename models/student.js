@@ -50,6 +50,6 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     }
-})
+}, {timestamps: true})
 
 module.exports = mongoose.model('Student', StudentSchema)
