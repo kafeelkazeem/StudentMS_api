@@ -1,4 +1,5 @@
 import Student from '../models/student.js'
+import { validationResult } from 'express-validator'
 
 export const getDashBoard = async (req, res, next) =>{
     try {
@@ -23,7 +24,6 @@ export const getDashBoard = async (req, res, next) =>{
             primaryBarChartData: classesNo, 
         })
 
-
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'An error occurred' });
@@ -46,6 +46,11 @@ export const getAllStudentsPerClass = async (req, res, next) =>{
 } 
 
 export const postAddStudent = async (req, res, next) =>{
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        console.log(error)
+        return res.status(400).json({error: error.array()}) 
+    }
     try {
         const studentObj = {
             firstName: req.body.firstName,
@@ -66,7 +71,23 @@ export const postAddStudent = async (req, res, next) =>{
         console.log(createdStudent)
         res.status(200).json({message: 'new student created'})
     } catch (error) {
-        res.status(404).json({message: 'something went wrong'})
+        res.status(400).json({message: 'something went wrong'})
         console.log(error)
+    }
+}
+
+export const getSingleStudent = async (req, res, next) =>{
+    const error = validationResult(req)
+    if(!error.isEmpty){
+        return res.status(400).json({error: error.array()})
+    }
+    const id = req.query.id
+    try {
+        const student = await Student.findById(id)
+        res.status(200).json(student)
+        console.log(student)
+    } catch (error) {
+        console.log(error)
+        res.status(404).json({error: 'Student not found'})
     }
 }
