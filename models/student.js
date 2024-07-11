@@ -19,7 +19,7 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     },
-    class: {
+    cls: {
         type: String,
         required: true
     },

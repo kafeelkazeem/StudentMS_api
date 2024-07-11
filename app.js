@@ -17,6 +17,6 @@ app.use('/api', router)
 
 mongoose.connect(DATABASE_URI)
 .then(res => console.log('connected'))
-.catch(err => console.log(err))
+.catch(err => console.log('not connected'))
 
 app.listen(PORT, ()=> console.log('running on port', PORT))
