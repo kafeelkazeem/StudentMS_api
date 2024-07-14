@@ -12,7 +12,6 @@ const studentValidator = [
     body('section').notEmpty(),
     body('gender').notEmpty().isString(),
     body('parentName').notEmpty(),
-    body('phoneNumber').isMobilePhone(),
     body('status').trim().isString(),
     body('paid').isNumeric(),
     body('owing').isNumeric()
