@@ -84,8 +84,9 @@ export const getSingleStudent = async (req, res, next) =>{
     const id = req.query.id
     try {
         const student = await Student.findById(id)
+        req.student = id
         res.status(200).json(student)
-        console.log(student)
+        console.log(req)
     } catch (error) {
         console.log(error)
         res.status(404).json({error: 'Student not found'})
