@@ -49,7 +49,7 @@ export const postAddStudent = async (req, res, next) =>{
     const error = validationResult(req)
     if(!error.isEmpty()){
         console.log(error)
-        return res.status(400).json({error: error.array()}) 
+        return res.status(422).json({error: error.array()}) 
     }
     try {
         const studentObj = {
@@ -69,7 +69,7 @@ export const postAddStudent = async (req, res, next) =>{
         const student = new Student(studentObj)
         const createdStudent = await student.save()
         console.log(createdStudent)
-        res.status(200).json({message: 'new student created'})
+        res.status(201).json({message: 'new student created'})
     } catch (error) {
         res.status(400).json({message: 'something went wrong'})
         console.log(error)
@@ -79,14 +79,15 @@ export const postAddStudent = async (req, res, next) =>{
 export const getSingleStudent = async (req, res, next) =>{
     const error = validationResult(req)
     if(!error.isEmpty){
-        return res.status(400).json({error: error.array()})
+        return res.status(422).json({error: error.array()})
     }
     const id = req.query.id
+    if(!id){
+        return res.status(422).json({error: 'invalid student'})
+    }
     try {
         const student = await Student.findById(id)
-        req.student = id
         res.status(200).json(student)
-        console.log(req)
     } catch (error) {
         console.log(error)
         res.status(404).json({error: 'Student not found'})
