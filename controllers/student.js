@@ -23,7 +23,6 @@ export const getDashBoard = async (req, res, next) =>{
             totalStudentOwing: totalStudentOwing,
             primaryBarChartData: classesNo, 
         })
-
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'An error occurred' });
