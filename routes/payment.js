@@ -1,8 +1,18 @@
 import express from 'express'
-import { postMakePayment } from '../controllers/payment.js'
+import { getPaymentHistory, postMakePayment } from '../controllers/payment.js'
+import {body} from 'express-validator'
 
 const router = express.Router()
 
-router.post('/makePayment', postMakePayment)
+const paymentValidation = [
+    body('payerName').trim().notEmpty(),
+    body('paidTo').isMongoId().notEmpty(),
+    body('amountPaid').isNumeric().notEmpty(),
+    body('date').isDate(),
+]
+
+router.post('/makePayment', paymentValidation, postMakePayment)
+
+router.get('/paymentHistory', getPaymentHistory)
 
 export default router
