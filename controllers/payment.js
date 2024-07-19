@@ -1,6 +1,8 @@
 import Payment from '../models/payment.js'
 import { validationResult } from 'express-validator'
 
+const fees = 10000
+
 export const postMakePayment = async (req, res, next) =>{
     const error = validationResult(req)
     if(!error.isEmpty()){
