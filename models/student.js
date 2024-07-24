@@ -43,11 +43,11 @@ const StudentSchema = new Schema({
         required: true
     },
     paid: {
-        type: String,
+        type: Number,
         required: true
     },
     owing: {
-        type: String,
+        type: Number,
         required: true
     }
 }, {timestamps: true})
