@@ -16,16 +16,19 @@ export const postMakePayment = async (req, res, next) =>{
         await payment.save();
 
         const owingAmount =  await Student.findById(paidTo).select('owing')
+        const prevPaid = await Student.findById(paidTo).select('paid')
         if(amountPaid - owingAmount.owing == 0){
-            await Student.findByIdAndUpdate(paidTo, {owing: 0}, {new: true, runValidators: true})
-        }else if (amountPaid - owingAmount.owing > 0){
-            await Student.findByIdAndUpdate(paidTo, {owing: amountPaid - owingAmount.owing}, {new: true, runValidators: true})
+            await Student.findByIdAndUpdate(paidTo, {owing: 0, paid: fees, status: 'paid',}, {new: true, runValidators: true})
+        }else if (owingAmount.owing - amountPaid > 0){
+            await Student.findByIdAndUpdate(paidTo, {owing: owingAmount.owing - amountPaid, paid: parseInt(prevPaid.paid) + parseInt(amountPaid), status: 'owing'}, {new: true, runValidators: true})
+        }else{
+            return res.status(401).json({message: 'wrong input'})
         }
         
         return res.status(201).json({message: 'succefully paid'})
     } catch (error) {
         console.log(error)
-        res.status(500).json({error: 'something went wrong'})
+        return res.status(500).json({error: 'something went wrong'})
     }
 }
 
@@ -34,9 +37,9 @@ export const getPaymentHistory = async (req, res, next) =>{
         const studentId = req.query.id
         const Payments = await Payment.find({paidTo: studentId})
         console.log(Payments)
-        res.status(200).json(Payments)
+        return res.status(200).json(Payments)
     } catch (error) {
         console.log(error)
-        res.status(500).json({error: 'something went wrong'})
+        return res.status(500).json({error: 'something went wrong'})
     }
 }

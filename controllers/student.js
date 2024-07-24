@@ -16,7 +16,7 @@ export const getDashBoard = async (req, res, next) =>{
               return count;
             })
         );
-        res.status(200).json({
+        return res.status(200).json({
             totalStudent: totalStudent, 
             totalStudentPaid: totalStudentPaid, 
             totalStudentNotPaid: totalStudentNotPaid, 
@@ -25,7 +25,7 @@ export const getDashBoard = async (req, res, next) =>{
         })
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: 'An error occurred' });
+        return res.status(500).json({ error: 'An error occurred' });
     }
 } 
 
@@ -37,10 +37,10 @@ export const getAllStudentsPerClass = async (req, res, next) =>{
             const { _id, ...rest } = doc.toObject();
             return { id: _id, ...rest };
         });
-        res.status(200).json(transformedResult);
+        return res.status(200).json(transformedResult);
     } catch (error) {
         console.log(error)
-        res.status(500).json({ error: 'An error occurred' });
+        return res.status(500).json({ error: 'An error occurred' });
     }
 } 
 
@@ -68,10 +68,10 @@ export const postAddStudent = async (req, res, next) =>{
         const student = new Student(studentObj)
         const createdStudent = await student.save()
         console.log(createdStudent)
-        res.status(201).json({message: 'new student created'})
+        return res.status(201).json({message: 'new student created'})
     } catch (error) {
-        res.status(400).json({message: 'something went wrong'})
         console.log(error)
+        return res.status(400).json({message: 'something went wrong'})
     }
 }
 
@@ -86,9 +86,9 @@ export const getSingleStudent = async (req, res, next) =>{
     }
     try {
         const student = await Student.findById(id)
-        res.status(200).json(student)
+        return res.status(200).json(student)
     } catch (error) {
         console.log(error)
-        res.status(404).json({error: 'Student not found'})
+        return res.status(404).json({error: 'Student not found'})
     }
 }
