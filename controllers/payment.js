@@ -24,7 +24,6 @@ export const postMakePayment = async (req, res, next) =>{
         }else{
             return res.status(401).json({message: 'wrong input'})
         }
-        
         return res.status(201).json({message: 'succefully paid'})
     } catch (error) {
         console.log(error)
