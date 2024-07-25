@@ -29,7 +29,6 @@ mongoose.connect(DATABASE_URI)
 
 async function seedAdmin() {
     try {
-      // Define admin credentials
       const adminData = {
         username: 'johndoe',
         password: '1234', 
@@ -45,8 +44,6 @@ async function seedAdmin() {
       console.error('Error seeding admin:', error);
     }
   }
-  
-  // Run the seed function
   seedAdmin();
 
 app.listen(PORT, ()=> console.log('running on port', PORT))
