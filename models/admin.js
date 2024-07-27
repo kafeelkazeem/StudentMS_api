@@ -1,5 +1,6 @@
 import argon2 from 'argon2'
 import mongoose from "mongoose"
+import bcrypt from 'bcryptjs'
 
 const Schema = mongoose.Schema
 
@@ -19,21 +20,13 @@ const AdminSchema = new Schema({
         default: 'admin',
     }
 }, {timestamps: true})
-
-AdminSchema.pre('save', async function (next) {
+  
+  // Method to verify password during login
+  AdminSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
-      try {
-        this.password = await argon2.hash(this.password);
-      } catch (error) {
-        return next(error);
-      }
+      this.password = await bcrypt.hash(this.password, 10);
     }
     next();
   });
-  
-  // Method to verify password during login
-  AdminSchema.methods.verifyPassword = async function (inputPassword) {
-    return await argon2.verify(this.password, inputPassword);
-  };
 
 export default mongoose.model('Admin', AdminSchema)

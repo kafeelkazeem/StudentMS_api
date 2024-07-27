@@ -15,12 +15,13 @@ export const postMakePayment = async (req, res, next) =>{
         const payment = new Payment({payerName: payerName, phoneNumber: phoneNumber, paidTo: paidTo, amountPaid: amountPaid, date: date})
         await payment.save();
 
-        const owingAmount =  await Student.findById(paidTo).select('owing')
-        const prevPaid = await Student.findById(paidTo).select('paid')
-        if(amountPaid - owingAmount.owing == 0){
+        const studentInfo = await Student.findById(paidTo).select('owing paid')
+        const owingAmount = studentInfo.owing
+        const prevPaid = studentInfo.paid 
+        if(amountPaid - owingAmount == 0){
             await Student.findByIdAndUpdate(paidTo, {owing: 0, paid: fees, status: 'paid',}, {new: true, runValidators: true})
-        }else if (owingAmount.owing - amountPaid > 0){
-            await Student.findByIdAndUpdate(paidTo, {owing: owingAmount.owing - amountPaid, paid: parseInt(prevPaid.paid) + parseInt(amountPaid), status: 'owing'}, {new: true, runValidators: true})
+        }else if (owingAmount - amountPaid > 0){
+            await Student.findByIdAndUpdate(paidTo, {owing: owingAmount - amountPaid, paid: parseInt(prevPaid) + parseInt(amountPaid), status: 'owing'}, {new: true, runValidators: true})
         }else{
             return res.status(401).json({message: 'wrong input'})
         }
