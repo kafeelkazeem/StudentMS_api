@@ -1,7 +1,6 @@
 import Admin from '../models/admin.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import 'dotenv/config.js';
 import { validationResult } from 'express-validator';
 
 const jwtSecret = process.env.TOKENSECRET

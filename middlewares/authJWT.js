@@ -1,3 +1,5 @@
+const jwtSecret = process.env.TOKENSECRET
+
 export const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization');
     if (!token) {
@@ -5,7 +7,7 @@ export const authenticateJWT = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, 'your_jwt_secret');
+        const decoded = jwt.verify(token, jwtSecret);
         req.user = decoded;
         next();
     } catch (err) {
