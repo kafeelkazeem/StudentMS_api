@@ -4,8 +4,10 @@ import mongoose from 'mongoose';
 import StudentRoute from './routes/appRoutes.js'
 import PaymentRoute from './routes/payment.js'
 import AuthRoute from './routes/auth.js'
+import FeesRoute from './routes/schoolFees.js'
 import cors from 'cors'
 import Admin from './models/admin.js'
+import { createInitialFees } from './util/helpers.js';
 
 const PORT = process.env.PORT
 const DATABASE_URI = process.env.DATABASE_URI
@@ -24,6 +26,7 @@ app.use((req, res, next) =>{
 app.use('/api', AuthRoute)
 app.use('/api', StudentRoute)
 app.use('/api', PaymentRoute)
+app.use('/api', FeesRoute)
 
 async function seedAdmin() {
   try {
@@ -47,6 +50,7 @@ mongoose.connect(DATABASE_URI)
 .then(res =>{
   console.log('connected')
   seedAdmin()
+  createInitialFees()
 })
 .catch(err => console.log('not connected'))
 
