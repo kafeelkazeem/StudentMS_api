@@ -1,4 +1,5 @@
 import Student from '../models/student.js'
+import Fees from '../models/fees.js'
 import { validationResult } from 'express-validator'
 
 export const getDashBoard = async (req, res, next) =>{
@@ -51,6 +52,20 @@ export const postAddStudent = async (req, res, next) =>{
         return res.status(422).json({error: error.array()}) 
     }
     try {
+        const fees = await Fees.findOne({section: req.body.section}).select('amount')
+        let owing
+        const status = () =>{
+            if(req.body.paid == 0){
+                owing = fees.amount
+                return 'not paid';
+            }else if(req.body.paid < fees.amount){
+                owing = fees.amount - req.body.paid
+                return 'owing';
+            }else{
+                owing = 0
+                return 'paid'
+            }
+        }
         const studentObj = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -61,9 +76,9 @@ export const postAddStudent = async (req, res, next) =>{
             parentName: req.body.parentName,
             phoneNumber: req.body.phoneNumber,
             address: req.body.address,
-            status: req.body.status,
+            status: status(),
             paid: req.body.paid,
-            owing: req.body.owing
+            owing: owing
         }
         const student = new Student(studentObj)
         const createdStudent = await student.save()
