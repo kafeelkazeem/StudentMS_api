@@ -13,6 +13,6 @@ const paymentValidation = [
 
 router.post('/makePayment', paymentValidation, postMakePayment)
 
-router.get('/paymentHistory', getPaymentHistory)
+router.get('/getPaymentHistory', getPaymentHistory)
 
 export default router
