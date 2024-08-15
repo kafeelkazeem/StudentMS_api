@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 const jwtSecret = process.env.TOKENSECRET
 
 export const authenticateJWT = (req, res, next) => {
@@ -5,12 +6,12 @@ export const authenticateJWT = (req, res, next) => {
     if (!token) {
         return res.status(403).json({ error: 'Access denied' });
     }
-
     try {
         const decoded = jwt.verify(token, jwtSecret);
         req.user = decoded;
         next();
     } catch (err) {
-        res.status(400).json({ error: 'Invalid token' });
+        console.log(err)
+        res.status(401).json({ error: 'Invalid token' });
     }
 };

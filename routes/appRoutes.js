@@ -1,6 +1,7 @@
 import express from 'express'
 import {getDashBoard, getAllStudentsPerClass, postAddStudent, getSingleStudent} from '../controllers/student.js'
 import {body, query} from 'express-validator'
+import { authenticateJWT } from '../middlewares/authJWT.js'
 
 const router = express.Router()
 
@@ -15,9 +16,9 @@ const studentValidator = [
     body('paid').isNumeric(),
 ]
 
-router.get('/getDashBoard', getDashBoard)
-router.get('/getAllStudentPerClass', getAllStudentsPerClass)
-router.post('/addStudent', studentValidator, postAddStudent)
-router.get('/getSingleStudent', [query('id').isMongoId().withMessage('Invalid Id')], getSingleStudent)
+router.get('/getDashBoard', authenticateJWT, getDashBoard)
+router.get('/getAllStudentPerClass', authenticateJWT, getAllStudentsPerClass)
+router.post('/addStudent', authenticateJWT, studentValidator, postAddStudent)
+router.get('/getSingleStudent', authenticateJWT, [query('id').isMongoId().withMessage('Invalid Id')], getSingleStudent)
 
 export default router
