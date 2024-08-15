@@ -1,6 +1,7 @@
 import express from 'express'
 import { getPaymentHistory, postMakePayment } from '../controllers/payment.js'
 import {body} from 'express-validator'
+import { authenticateJWT } from '../middlewares/authJWT.js'
 
 const router = express.Router()
 
@@ -11,8 +12,8 @@ const paymentValidation = [
     body('date').isDate(),
 ]
 
-router.post('/makePayment', paymentValidation, postMakePayment)
+router.post('/makePayment', authenticateJWT, paymentValidation, postMakePayment)
 
-router.get('/getPaymentHistory', getPaymentHistory)
+router.get('/getPaymentHistory', authenticateJWT, getPaymentHistory)
 
 export default router
