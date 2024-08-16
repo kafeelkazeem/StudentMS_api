@@ -21,7 +21,6 @@ export const getSchoolFees = async (req, res, next) => {
     try {
         const sections = ['nursery', 'primary', 'juniorSecondary', 'seniorSecondary'];
         const fees = await Fees.find({ section: { $in: sections } }).select('section amount');
-        // Create an object to hold the fees
         const feeMap = {};
         fees.forEach(fee => {
             feeMap[`${fee.section}`] = fee.amount;

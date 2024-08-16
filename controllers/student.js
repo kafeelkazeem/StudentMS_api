@@ -9,20 +9,31 @@ export const getDashBoard = async (req, res, next) =>{
         const totalStudentOwing = await Student.countDocuments({status: 'owing'})
         const totalStudentNotPaid = await Student.countDocuments({status: 'not paid'})
 
-        const classes = ['primary 1', 'primary 2', 'primary 3', 'primary 4', 'primary 5']
+        const countCls = async (cl) =>{
+            return await Promise.all(
+                cl.map(async cls =>{
+                    const count = await Student.countDocuments({cls: cls});
+                    return count
+                })
+            )
+        }
 
-        const classesNo = await Promise.all(
-            classes.map(async cls => {
-              const count = await Student.countDocuments({ cls: cls });
-              return count;
-            })
-        );
+        const nurseryCls = ['playGroup', 'preNursery', 'nursery 1', 'nursery 2']
+        const primaryCls = ['primary 1', 'primary 2', 'primary 3', 'primary 4', 'primary 5']
+        const secondaryCls = ['jss 1', 'jss 2', 'jss 3', 'sss 1', 'sss 2', 'sss 3']
+
+        const nurseryClassesNo = await countCls(nurseryCls)
+        const primaryClassesNo = await countCls(primaryCls)
+        const secondaryClassesNo = await countCls(secondaryCls)
+   
         return res.status(200).json({
             totalStudent: totalStudent, 
             totalStudentPaid: totalStudentPaid, 
             totalStudentNotPaid: totalStudentNotPaid, 
             totalStudentOwing: totalStudentOwing,
-            primaryBarChartData: classesNo, 
+            nurseryBarChartData: nurseryClassesNo,
+            primaryBarChartData: primaryClassesNo,
+            secondaryBarChartData: secondaryClassesNo 
         })
     } catch (error) {
         console.log(error)
@@ -92,7 +103,7 @@ export const postAddStudent = async (req, res, next) =>{
 
 export const getSingleStudent = async (req, res, next) =>{
     const error = validationResult(req)
-    if(!error.isEmpty){
+    if(!error.isEmpty()){
         return res.status(422).json({error: error.array()})
     }
     const id = req.query.id
