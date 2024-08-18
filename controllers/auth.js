@@ -49,7 +49,7 @@ export const postChangePassword = async (req, res, next) =>{
 
         await Admin.findByIdAndUpdate(req.user.id, {password: hashedPassword}, {runValidators: true})
 
-        return res.status(200).json({message: 'Password changed succesfully'})
+        return res.status(201).json({message: 'Password changed succesfully'})
 
     } catch (error) {
         console.log(error)
