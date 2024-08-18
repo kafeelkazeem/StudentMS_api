@@ -9,7 +9,7 @@ export const postLogin = async (req, res, next) =>{
 
     const error = validationResult(req)
 
-    if(!error.isEmpty){
+    if(!error.isEmpty()){
         return res.status(401).json({error: error.array()})
     }
     const {username, password} = req.body
@@ -31,5 +31,28 @@ export const postLogin = async (req, res, next) =>{
 } 
 
 export const postChangePassword = async (req, res, next) =>{
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        console.log(error)
+        return res.status(400).json({error: error.array()})
+    }
+    const {oldPassword, newPassword} = req.body;
+    try {
+        const admin = await Admin.findById(req.user.id)
+        
+        const isOldPassword = await bcrypt.compare(oldPassword, admin.password)
+        if(!isOldPassword){
+            return res.status(400).json({message: 'Old password incorrect'})
+        }
+        
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
 
+        await Admin.findByIdAndUpdate(req.user.id, {password: hashedPassword}, {runValidators: true})
+
+        return res.status(200).json({message: 'Password changed succesfully'})
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: 'an error occured'})
+    }
 }
