@@ -22,7 +22,7 @@ export const postLogin = async (req, res, next) =>{
         if(!isPassword){
             return res.status(400).json({error: 'invalid username or password'})
         }
-        const token = jwt.sign({id: admin._id, username: username}, jwtSecret, {expiresIn: '1h'})
+        const token = jwt.sign({id: admin._id, username: username}, jwtSecret, {expiresIn: '7h'})
         return res.status(200).json({token: token})
     } catch (error) {
         console.log(error)
