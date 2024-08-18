@@ -36,12 +36,12 @@ export const postChangePassword = async (req, res, next) =>{
         console.log(error)
         return res.status(400).json({error: error.array()})
     }
-    const {oldPassword, newPassword} = req.body;
+    const {currentPassword, newPassword} = req.body;
     try {
         const admin = await Admin.findById(req.user.id)
         
-        const isOldPassword = await bcrypt.compare(oldPassword, admin.password)
-        if(!isOldPassword){
+        const isCurrentPassword = await bcrypt.compare(currentPassword, admin.password)
+        if(!isCurrentPassword){
             return res.status(400).json({message: 'Old password incorrect'})
         }
         

@@ -11,7 +11,7 @@ const valLogin = [
 ]
 
 const valPassword = [
-    body('oldPassword').notEmpty().trim(),
+    body('currentPassword').notEmpty().trim(),
     body('newPassword').notEmpty().trim().isAlphanumeric().isLength({min: 5}).isAlphanumeric(),
 ]
 
