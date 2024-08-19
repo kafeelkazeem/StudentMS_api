@@ -12,7 +12,7 @@ const valLogin = [
 
 const valPassword = [
     body('currentPassword').notEmpty().trim(),
-    body('newPassword').notEmpty().trim().isAlphanumeric().isLength({min: 5}).isAlphanumeric(),
+    body('newPassword').notEmpty().trim().isAlphanumeric().isLength({min: 5}),
 ]
 
 router.post('/login', valLogin, postLogin)
