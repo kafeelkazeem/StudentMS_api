@@ -18,11 +18,6 @@ app.use(express.json())
 
 app.use(cors())
 
-app.use((req, res, next) =>{
-    req.studentId = 5;
-    next()
-})
-
 app.use('/api', AuthRoute)
 app.use('/api', StudentRoute)
 app.use('/api', PaymentRoute)

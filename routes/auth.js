@@ -12,7 +12,7 @@ const valLogin = [
 
 const valPassword = [
     body('currentPassword').notEmpty().trim(),
-    body('newPassword').notEmpty().trim().isAlphanumeric().isLength({min: 5}),
+    body('newPassword').notEmpty().trim().isAlphanumeric().isLength({min: 5}).withMessage('Make sure your new password has numbers and alphabets. Also it should not have less than 5 characters'),
 ]
 
 router.post('/login', valLogin, postLogin)
