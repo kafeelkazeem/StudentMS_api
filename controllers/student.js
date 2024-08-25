@@ -1,6 +1,7 @@
 import Student from '../models/student.js'
 import Fees from '../models/fees.js'
 import { validationResult } from 'express-validator'
+import { splitName } from '../util/helpers.js'
 
 export const getDashBoard = async (req, res, next) =>{
     try {
@@ -116,5 +117,25 @@ export const getSingleStudent = async (req, res, next) =>{
     } catch (error) {
         console.log(error)
         return res.status(404).json({error: 'Student not found'})
+    }
+}
+
+export const postSearchStudent = async (req, res, next) =>{
+    const error = validationResult(req)
+    if(!error.isEmpty()){
+        return res.status(422).json({error: 'Enter student name'})
+    }
+    const {studentName} = req.body
+    const name = splitName(studentName)
+    try {
+        const students = await Student.find({firstName: name.firstName, lastName: name.lastName}).select('firstName lastName section cls')
+        if(students.length > 0){
+            return res.status(200).json(students)
+        }else{
+            return res.status(404).json({message: 'student not found'})
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({error: 'student not found'})
     }
 }
