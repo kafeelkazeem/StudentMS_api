@@ -128,7 +128,7 @@ export const getSearchStudent = async (req, res, next) =>{
     const {studentName} = req.query
     const name = splitName(studentName)
     try {
-        const students = await Student.find({firstName: name.firstName, lastName: name.lastName}).select('firstName lastName section cls')
+        const students = await Student.find({firstName: name.firstName, lastName: name.lastName}).select('firstName lastName cls status paid owing')
         if(students.length > 0){
             return res.status(200).json(students)
         }else{
