@@ -1,5 +1,5 @@
 import express from 'express'
-import {getDashBoard, getAllStudentsPerClass, postAddStudent, getSingleStudent, postSearchStudent} from '../controllers/student.js'
+import {getDashBoard, getAllStudentsPerClass, postAddStudent, getSingleStudent, getSearchStudent} from '../controllers/student.js'
 import {body, query} from 'express-validator'
 import { authenticateJWT } from '../middlewares/authJWT.js'
 
@@ -17,13 +17,13 @@ const studentValidator = [
 ]
 
 const searchStudentValidator = [
-    body('studentName').notEmpty()
+    query('studentName').notEmpty()
 ]
 
 router.get('/getDashBoard', authenticateJWT, getDashBoard)
 router.get('/getAllStudentPerClass', authenticateJWT, getAllStudentsPerClass)
 router.post('/addStudent', authenticateJWT, studentValidator, postAddStudent)
 router.get('/getSingleStudent', authenticateJWT, [query('id').isMongoId().withMessage('Invalid Id')], getSingleStudent)
-router.post('/searchStudent', authenticateJWT, searchStudentValidator, postSearchStudent)
+router.get('/searchStudent', authenticateJWT, searchStudentValidator, getSearchStudent)
 
 export default router

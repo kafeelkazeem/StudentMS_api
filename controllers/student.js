@@ -120,12 +120,12 @@ export const getSingleStudent = async (req, res, next) =>{
     }
 }
 
-export const postSearchStudent = async (req, res, next) =>{
+export const getSearchStudent = async (req, res, next) =>{
     const error = validationResult(req)
     if(!error.isEmpty()){
         return res.status(422).json({error: 'Enter student name'})
     }
-    const {studentName} = req.body
+    const {studentName} = req.query
     const name = splitName(studentName)
     try {
         const students = await Student.find({firstName: name.firstName, lastName: name.lastName}).select('firstName lastName section cls')
