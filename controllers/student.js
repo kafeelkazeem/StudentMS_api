@@ -120,22 +120,59 @@ export const getSingleStudent = async (req, res, next) =>{
     }
 }
 
-export const getSearchStudent = async (req, res, next) =>{
-    const error = validationResult(req)
-    if(!error.isEmpty()){
-        return res.status(422).json({error: 'Enter student name'})
+export const getSearchStudent = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ error: 'Enter a valid student name' });
     }
-    const {studentName} = req.query
-    const name = splitName(studentName)
+  
+    const { studentName } = req.query;
+  
+    if (!studentName) {
+      return res.status(400).json({ error: 'Student name is required' });
+    }
+  
     try {
-        const students = await Student.find({firstName: name.firstName, lastName: name.lastName}).select('firstName lastName cls status paid owing')
-        if(students.length > 0){
-            return res.status(200).json(students)
-        }else{
-            return res.status(404).json({message: 'student not found'})
-        }
+      // Split the student name into parts to allow flexible searching
+      const nameParts = studentName.trim().split(' ');
+  
+      let students;
+  
+      if (nameParts.length === 1) {
+        // Search by either first name or last name if only one name part is provided
+        students = await Student.find({
+          $or: [
+            { firstName: { $regex: nameParts[0], $options: 'i' } },
+            { lastName: { $regex: nameParts[0], $options: 'i' } }
+          ]
+        }).select('firstName lastName cls status paid owing');
+      } else if (nameParts.length > 1) {
+        // Search by both first and last name if two or more name parts are provided
+        students = await Student.find({
+          $or: [
+            {
+              $and: [
+                { firstName: { $regex: nameParts[0], $options: 'i' } },
+                { lastName: { $regex: nameParts[1], $options: 'i' } }
+              ]
+            },
+            {
+              $and: [
+                { firstName: { $regex: nameParts[1], $options: 'i' } },
+                { lastName: { $regex: nameParts[0], $options: 'i' } }
+              ]
+            }
+          ]
+        }).select('firstName lastName cls status paid owing');
+      }
+      if (students && students.length > 0) {
+        return res.status(200).json(students);
+      } else {
+        return res.status(404).json({ message: 'Student not found' });
+      }
     } catch (error) {
-        console.log(error)
-        return res.status(404).json({error: 'student not found'})
+      console.error(error);
+      return res.status(500).json({ error: 'An error occurred while searching for the student' });
     }
-}
+  };
+  

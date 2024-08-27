@@ -35,7 +35,7 @@ export function splitName(fullName) {
     firstName = nameParts[0];
     lastName = nameParts.slice(1).join(' ');
   } else {
-    firstName = nameParts[0]; // If only one name is provided, treat it as firstName
+    firstName = nameParts[0]; 
   }
 
   return { firstName, lastName };
